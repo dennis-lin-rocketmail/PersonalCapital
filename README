@@ -1,0 +1,7 @@
+To run the project, you need the following:
+    Java 1.7
+    Maven 3.0.5
+
+
+Run the "run.sh" script included in this project to compile, run unit tests,
+and execute the program.

@@ -1,6 +1,5 @@
 package com.dennis.interviews.sample;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,51 +36,12 @@ public class PortfolioMonteCarloForward {
                 "ConservativePortfolios.csv");
         //*/
 
-        reportPortfolioList(
+        PortfolioStatistics.reportPortfolioList(
                 "Aggressive (Future Value, FV Inflation Adjusted)",
                 listAggressivePortfolios);
-        reportPortfolioList(
+        PortfolioStatistics.reportPortfolioList(
                 "Conservative (Future Value, FV Inflation Adjusted)",
                 listConservativePortfolios);
-    }
-
-    private static void reportPortfolioList(
-            final String title,
-            final List<Portfolio> listPortfolios) {
-        DecimalFormat df = new DecimalFormat("0.000000");
-        Portfolio portfolioPercentile10 = PortfolioStatistics.getPercentilePortfolio(
-                listPortfolios, 10);
-        BigDecimal endingBalance10 = portfolioPercentile10.getEndingPrincipal();
-        BigDecimal inflationAdjustedEndingBalance10 =
-                portfolioPercentile10.getInflationAdjustedEndingPrincipal();
-
-        Portfolio portfolioPercentile90 = PortfolioStatistics.getPercentilePortfolio(
-                listPortfolios, 90);
-        BigDecimal endingBalance90 = portfolioPercentile10.getEndingPrincipal();
-        BigDecimal inflationAdjustedEndingBalance90 =
-                portfolioPercentile90.getInflationAdjustedEndingPrincipal();
-
-        BigDecimal medianBalance =
-        		PortfolioStatistics.getMedianEndingPrincipal(listPortfolios);
-        BigDecimal medianBalanceInflationAdjusted =
-        		PortfolioStatistics.getMedianInflationAdjustedEndingPrincipal(
-                        listPortfolios);
-
-        System.out.print(title);
-        System.out.println(":");
-
-        System.out.print("    Median:          ");
-        System.out.print(df.format(medianBalance));
-        System.out.print(", ");
-        System.out.println(df.format(medianBalanceInflationAdjusted));
-        System.out.print("    10th Percentile: ");
-        System.out.print(df.format(endingBalance10));
-        System.out.print(", ");
-        System.out.println(df.format(inflationAdjustedEndingBalance10));
-        System.out.print("    90th Percentile: ");
-        System.out.print(df.format(endingBalance90));
-        System.out.print(", ");
-        System.out.println(df.format(inflationAdjustedEndingBalance90));
     }
 
     private static Portfolio createAggressivePortfolio(final int index) {
@@ -90,10 +50,10 @@ public class PortfolioMonteCarloForward {
                 new Portfolio(
                         "Aggressive-" + df.format(index),
                         100000,
-                        9.4324,
-                        15.675,
+                        //9.4324,
+                        //15.675,
                         3.5);
-        portfolio.simulateYears(1,  20);
+        //portfolio.simulateYears(1,  20);
 
         return portfolio;
     }
@@ -104,10 +64,10 @@ public class PortfolioMonteCarloForward {
                 new Portfolio(
                         "Conservative-" + df.format(index),
                         100000,
-                        6.189,
-                        6.3438,
+                        //6.189,
+                        //6.3438,
                         3.5);
-        portfolio.simulateYears(1,  20);
+        //portfolio.simulateYears(1,  20);
 
         return portfolio;
     }

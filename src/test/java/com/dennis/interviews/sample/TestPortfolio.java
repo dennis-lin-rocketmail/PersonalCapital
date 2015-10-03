@@ -7,6 +7,8 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.dennis.interviews.sample.simulation.AbstractSimulationScenario;
+import com.dennis.interviews.sample.simulation.ConstantYield;
 import com.dennis.interviews.sample.util.DebuggingTools;
 
 public class TestPortfolio {
@@ -49,8 +51,9 @@ public class TestPortfolio {
 
     @Test
     public void testBasePortfolio01() {
-        Portfolio portfolio = new Portfolio("TestPortfolio", 100000, 10, 0);
-        portfolio.simulateYears(1,  1);
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(10.0);
+        Portfolio portfolio = new Portfolio("TestPortfolio", 100000);
+        simulationScenario.simulateYears(portfolio, 1, 1);
         BigDecimal endingBalance = portfolio.getEndingPrincipal();
         Assert.assertEquals(
                 endingBalance.doubleValue(),
@@ -60,8 +63,9 @@ public class TestPortfolio {
 
     @Test
     public void testBasePortfolio02() {
-        Portfolio portfolio = new Portfolio("TestPortfolio", 100000, 10, 0);
-        portfolio.simulateYears(1,  2);
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(10.0);
+        Portfolio portfolio = new Portfolio("TestPortfolio", 100000, 0);
+        simulationScenario.simulateYears(portfolio, 1, 2);
         BigDecimal endingBalance = portfolio.getEndingPrincipal();
         Assert.assertEquals(
                 endingBalance.doubleValue(),
@@ -71,7 +75,7 @@ public class TestPortfolio {
 
     @Test
     public void testBasePortfolio03() {
-        Portfolio portfolio = new Portfolio("TestPortfolio", 100000, 20, 20);
+        Portfolio portfolio = new Portfolio("TestPortfolio", 100000, 0);
         portfolio.setYield(2, BigDecimal.TEN.doubleValue());
         portfolio.setYield(1, BigDecimal.TEN.doubleValue());
         BigDecimal endingBalance = portfolio.getEndingPrincipal();
@@ -83,36 +87,40 @@ public class TestPortfolio {
 
     @Test
     public void testCompareMoreThan() {
-        Portfolio portfolio01 = new Portfolio("TestPortfolio01", 100000, 10, 0);
-        portfolio01.simulateYears(1, 3);
-        Portfolio portfolio02 = new Portfolio("TestPortfolio02", 100000, 10, 0);
-        portfolio02.simulateYears(1, 1);
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(10.0);
+        Portfolio portfolio01 = new Portfolio("TestPortfolio01", 100000);
+        simulationScenario.simulateYears(portfolio01, 1, 3);
+        Portfolio portfolio02 = new Portfolio("TestPortfolio02", 100000);
+        simulationScenario.simulateYears(portfolio02, 1, 1);
 
         Assert.assertEquals(portfolio01.compareTo(portfolio02), 1);
     }
 
     @Test
     public void testCompareLessThan() {
-        Portfolio portfolio01 = new Portfolio("TestPortfolio01", 100000, 10, 0);
-        portfolio01.simulateYears(1, 3);
-        Portfolio portfolio02 = new Portfolio("TestPortfolio02", 100000, 10, 0);
-        portfolio02.simulateYears(1, 1);
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(10.0);
+        Portfolio portfolio01 = new Portfolio("TestPortfolio01", 100000);
+        simulationScenario.simulateYears(portfolio01, 1, 3);
+        Portfolio portfolio02 = new Portfolio("TestPortfolio02", 100000);
+        simulationScenario.simulateYears(portfolio02, 1, 1);
 
         Assert.assertEquals(portfolio02.compareTo(portfolio01), -1);
     }
 
     @Test
     public void testCompareEquals() {
-        Portfolio portfolio = new Portfolio("TestPortfolio01", 100000, 10, 0);
-        portfolio.simulateYears(1, 3);
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(10.0);
+        Portfolio portfolio = new Portfolio("TestPortfolio", 100000);
+        simulationScenario.simulateYears(portfolio, 1, 3);
 
         Assert.assertEquals(portfolio, portfolio);
     }
 
     @Test
     public void testEndingBalanceNoInterestNoInflation() {
-        Portfolio portfolio = new Portfolio("TestPortfolio01", 100000, 0, 0, 0);
-        portfolio.simulateYears(1, 10);
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(0.0);
+        Portfolio portfolio = new Portfolio("TestPortfolio01", 100000, 0);
+        simulationScenario.simulateYears(portfolio, 1, 10);
 
         BigDecimal expectedBalance = new BigDecimal(100000);
         List<String> listErrorMessages = new ArrayList<>();
@@ -140,15 +148,14 @@ public class TestPortfolio {
     public void testEndingPortfolioBalancesInflationEqualsReturn() {
         double rateInterest = 3.5;
         double rateInflation = 3.5;
+    	AbstractSimulationScenario simulationScenario = new ConstantYield(rateInterest);
         int numYears = 10;
         Portfolio portfolio =
                 new Portfolio(
                         "TestPortfolio01",
                         100000,
-                        rateInterest,
-                        0,
                         rateInflation);
-        portfolio.simulateYears(1, numYears);
+        simulationScenario.simulateYears(portfolio, 1, numYears);
 
         BigDecimal interestFactor = new BigDecimal(rateInterest);
         interestFactor = interestFactor.divide(BigDecimal.TEN);

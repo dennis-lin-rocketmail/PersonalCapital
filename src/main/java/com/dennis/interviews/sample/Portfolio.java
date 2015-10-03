@@ -4,15 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Portfolio implements Comparable<Portfolio> {
     private String name;
     private BigDecimal endingPrincipal;
     private BigDecimal inflationAdjustedEndingPrincipal;
     private BigDecimal principal;
-    private BigDecimal yieldMean;
-    private BigDecimal yieldStdDev;
     private BigDecimal inflation;
     private List<BigDecimal> listYields;
     private List<BigDecimal> listYearEndPrincipals;
@@ -20,33 +17,23 @@ public class Portfolio implements Comparable<Portfolio> {
 
     public Portfolio(
             final String portfolioName,
-            final double principalStart,
-            final double portfolioYieldMean,
-            final double portfolioYieldStdDev) {
-        init(portfolioName, principalStart, portfolioYieldMean,
-                portfolioYieldStdDev, 0.0);
+            final double principalStart) {
+        init(portfolioName, principalStart, 0.0);
     }
 
     public Portfolio(
             final String portfolioName,
             final double principalStart,
-            final double portfolioYieldMean,
-            final double portfolioYieldStdDev,
             final double expectedInflation) {
-        init(portfolioName, principalStart, portfolioYieldMean,
-                portfolioYieldStdDev, expectedInflation);
+        init(portfolioName, principalStart, expectedInflation);
     }
 
     private void init(
             final String portfolioName,
             final double principalStart,
-            final double portfolioYieldMean,
-            final double portfolioYieldStdDev,
             final double expectedInflation) {
         name = portfolioName;
         principal = new BigDecimal(principalStart);
-        yieldMean = new BigDecimal(portfolioYieldMean);
-        yieldStdDev = new BigDecimal(portfolioYieldStdDev);
 
         inflation = new BigDecimal(expectedInflation);
         inflation = inflation.divide(BigDecimal.TEN);
@@ -60,28 +47,14 @@ public class Portfolio implements Comparable<Portfolio> {
     }
 
     public void setYield(final int year, final double newYield) {
+    	setYield(year, new BigDecimal(newYield));
+    }
+    
+    public void setYield(final int year, final BigDecimal newYield) {
         while (listYields.size() <= year) {
             listYields.add(BigDecimal.ZERO);
         }
-        listYields.set(year, new BigDecimal(newYield));
-
-        calculatePortfolio();
-    }
-
-    public void simulateYears(final int yearStart, final int yearEnd) {
-        endingPrincipal = null;
-
-        while (listYields.size() <= yearEnd) {
-            listYields.add(BigDecimal.ZERO);
-        }
-
-        Random random = new Random();
-        for (int year = yearStart; year <= yearEnd; year++) {
-            BigDecimal randomFactor = new BigDecimal(random.nextGaussian());
-            BigDecimal randomYield =
-                    yieldMean.add(yieldStdDev.multiply(randomFactor));
-            listYields.set(year, randomYield);
-        }
+        listYields.set(year, newYield);
 
         calculatePortfolio();
     }
@@ -102,7 +75,7 @@ public class Portfolio implements Comparable<Portfolio> {
         return listYearEndPrincipalsInflationAdjusted.get(year);
     }
 
-    private void calculatePortfolio() {
+    public void calculatePortfolio() {
         endingPrincipal = principal;
 
         listYearEndPrincipals.clear();

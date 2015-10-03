@@ -2,6 +2,7 @@ package com.dennis.interviews.sample.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import com.dennis.interviews.sample.Portfolio;
@@ -58,4 +59,42 @@ public final class PortfolioStatistics {
         return listPortfolio.get(expectedIndex.intValue());
     }
 
+    public static final void reportPortfolioList(
+            final String title,
+            final List<Portfolio> listPortfolios) {
+        DecimalFormat df = new DecimalFormat("0.000000");
+        Portfolio portfolioPercentile10 = PortfolioStatistics.getPercentilePortfolio(
+                listPortfolios, 10);
+        BigDecimal endingBalance10 = portfolioPercentile10.getEndingPrincipal();
+        BigDecimal inflationAdjustedEndingBalance10 =
+                portfolioPercentile10.getInflationAdjustedEndingPrincipal();
+
+        Portfolio portfolioPercentile90 = PortfolioStatistics.getPercentilePortfolio(
+                listPortfolios, 90);
+        BigDecimal endingBalance90 = portfolioPercentile10.getEndingPrincipal();
+        BigDecimal inflationAdjustedEndingBalance90 =
+                portfolioPercentile90.getInflationAdjustedEndingPrincipal();
+
+        BigDecimal medianBalance =
+        		PortfolioStatistics.getMedianEndingPrincipal(listPortfolios);
+        BigDecimal medianBalanceInflationAdjusted =
+        		PortfolioStatistics.getMedianInflationAdjustedEndingPrincipal(
+                        listPortfolios);
+
+        System.out.print(title);
+        System.out.println(":");
+
+        System.out.print("    Median:          ");
+        System.out.print(df.format(medianBalance));
+        System.out.print(", ");
+        System.out.println(df.format(medianBalanceInflationAdjusted));
+        System.out.print("    10th Percentile: ");
+        System.out.print(df.format(endingBalance10));
+        System.out.print(", ");
+        System.out.println(df.format(inflationAdjustedEndingBalance10));
+        System.out.print("    90th Percentile: ");
+        System.out.print(df.format(endingBalance90));
+        System.out.print(", ");
+        System.out.println(df.format(inflationAdjustedEndingBalance90));
+    }
 }

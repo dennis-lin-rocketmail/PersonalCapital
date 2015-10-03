@@ -1,15 +1,12 @@
 package com.dennis.interviews.sample;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Portfolio implements Comparable {
+public class Portfolio implements Comparable<Portfolio> {
     private String name;
     private BigDecimal endingPrincipal;
     private BigDecimal inflationAdjustedEndingPrincipal;
@@ -145,119 +142,7 @@ public class Portfolio implements Comparable {
         return name;
     }
 
-    @Override
-    public int compareTo(final Object object) {
-        if (object instanceof Portfolio) {
-            Portfolio portfolio = (Portfolio) object;
-            return getEndingPrincipal().compareTo(portfolio.getEndingPrincipal());
-        }
-        if (object instanceof Number) {
-            Number number = (Number) object;
-            BigDecimal value = new BigDecimal(number.doubleValue());
-            return getEndingPrincipal().compareTo(value);
-        }
-
-        throw new IllegalArgumentException("Can not compare");
-    }
-
-    public static final Portfolio getPercentilePortfolio(
-            final List<Portfolio> listPortfolio, final int percentile) {
-        BigDecimal expectedIndex = new BigDecimal(percentile);
-        expectedIndex =
-                expectedIndex.multiply(new BigDecimal(listPortfolio.size()));
-        expectedIndex = expectedIndex.divide(BigDecimal.TEN);
-        expectedIndex = expectedIndex.divide(BigDecimal.TEN);
-        expectedIndex.setScale(0, BigDecimal.ROUND_UP);
-
-        return listPortfolio.get(expectedIndex.intValue());
-    }
-
-    public static final void dumpToFile(
-            final List<Portfolio> listPortfolio,
-            final String filename) {
-        try {
-            DecimalFormat df = new DecimalFormat("0.000000");
-            FileOutputStream outfile = new FileOutputStream(filename);
-            outfile.write("Portfolio Name,Beginning Principal,".getBytes());
-            outfile.write("Ending Principal\n".getBytes());
-            int index = 0;
-            for (Portfolio portfolio : listPortfolio) {
-                System.out.println("Dumping portfolio #" + index++);
-                outfile.write(portfolio.getName().getBytes());
-                outfile.write(",".getBytes());
-                BigDecimal beginningPrincipal =
-                        portfolio.getBeginningPrincipal();
-                outfile.write(beginningPrincipal.toString().getBytes());
-                outfile.write(",".getBytes());
-                BigDecimal endingPrincipal =
-                        portfolio.getEndingPrincipal();
-                outfile.write(endingPrincipal.toString().getBytes());
-                outfile.write(",Yields".getBytes());
-                for (int year = 0; year < portfolio.getNumYields(); year++) {
-                    outfile.write(",".getBytes());
-                    BigDecimal yield = portfolio.getYieldForYear(year);
-                    outfile.write(df.format(yield).getBytes());
-                }
-                outfile.write("\n".getBytes());
-                outfile.write(",,,Ending Principal".getBytes());
-                for (int year = 0; year < portfolio.getNumYields(); year++) {
-                    outfile.write(",".getBytes());
-                    BigDecimal principal =
-                            portfolio.getEndingPrincipalForYear(year);
-                    outfile.write(df.format(principal).getBytes());
-                }
-                outfile.write("\n".getBytes());
-                outfile.write(",,,Inflation Adjusted".getBytes());
-                for (int year = 0; year < portfolio.getNumYields(); year++) {
-                    outfile.write(",".getBytes());
-                    BigDecimal principal =
-                        portfolio.getInflationAdjustedEndingPrincipalForYear(
-                                year);
-                    outfile.write(df.format(principal).getBytes());
-                }
-                outfile.write("\n".getBytes());
-            }
-            outfile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static BigDecimal getMedianInflationAdjustedEndingPrincipal(
-            final List<Portfolio> sortedListPortfolios) {
-        int medianIndex = sortedListPortfolios.size() / 2;
-        if (sortedListPortfolios.size() % 2 == 1) {
-            Portfolio portfolioRight = sortedListPortfolios.get(medianIndex);
-            Portfolio portfolioLeft = sortedListPortfolios.get(medianIndex - 1);
-            BigDecimal median =
-                    portfolioRight.getInflationAdjustedEndingPrincipal();
-            median = median.add(
-                    portfolioLeft.getInflationAdjustedEndingPrincipal());
-            median = median.divide(new BigDecimal(2), RoundingMode.HALF_UP);
-
-            return median;
-        } else {
-            Portfolio medianPortfolio = sortedListPortfolios.get(medianIndex);
-
-            return medianPortfolio.getInflationAdjustedEndingPrincipal();
-        }
-    }
-
-    public static BigDecimal getMedianEndingPrincipal(
-            final List<Portfolio> sortedListPortfolios) {
-        int medianIndex = sortedListPortfolios.size() / 2;
-        if (sortedListPortfolios.size() % 2 == 1) {
-            Portfolio portfolioRight = sortedListPortfolios.get(medianIndex);
-            Portfolio portfolioLeft = sortedListPortfolios.get(medianIndex - 1);
-            BigDecimal median = portfolioRight.getEndingPrincipal();
-            median = median.add(portfolioLeft.getEndingPrincipal());
-            median = median.divide(new BigDecimal(2), RoundingMode.HALF_UP);
-
-            return median;
-        } else {
-            Portfolio medianPortfolio = sortedListPortfolios.get(medianIndex);
-
-            return medianPortfolio.getEndingPrincipal();
-        }
+    public int compareTo(final Portfolio portfolio) {
+        return getEndingPrincipal().compareTo(portfolio.getEndingPrincipal());
     }
 }

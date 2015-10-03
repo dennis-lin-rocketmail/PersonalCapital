@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.dennis.interviews.sample.util.PortfolioStatistics;
+
 public class PortfolioMonteCarloForward {
     public static void main(final String[] args) {
         List<Portfolio> listAggressivePortfolios = new ArrayList<>();
@@ -47,22 +49,22 @@ public class PortfolioMonteCarloForward {
             final String title,
             final List<Portfolio> listPortfolios) {
         DecimalFormat df = new DecimalFormat("0.000000");
-        Portfolio portfolioPercentile10 = Portfolio.getPercentilePortfolio(
+        Portfolio portfolioPercentile10 = PortfolioStatistics.getPercentilePortfolio(
                 listPortfolios, 10);
         BigDecimal endingBalance10 = portfolioPercentile10.getEndingPrincipal();
         BigDecimal inflationAdjustedEndingBalance10 =
                 portfolioPercentile10.getInflationAdjustedEndingPrincipal();
 
-        Portfolio portfolioPercentile90 = Portfolio.getPercentilePortfolio(
+        Portfolio portfolioPercentile90 = PortfolioStatistics.getPercentilePortfolio(
                 listPortfolios, 90);
         BigDecimal endingBalance90 = portfolioPercentile10.getEndingPrincipal();
         BigDecimal inflationAdjustedEndingBalance90 =
                 portfolioPercentile90.getInflationAdjustedEndingPrincipal();
 
         BigDecimal medianBalance =
-                Portfolio.getMedianEndingPrincipal(listPortfolios);
+        		PortfolioStatistics.getMedianEndingPrincipal(listPortfolios);
         BigDecimal medianBalanceInflationAdjusted =
-                Portfolio.getMedianInflationAdjustedEndingPrincipal(
+        		PortfolioStatistics.getMedianInflationAdjustedEndingPrincipal(
                         listPortfolios);
 
         System.out.print(title);

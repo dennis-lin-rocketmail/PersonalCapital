@@ -7,6 +7,8 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.dennis.interviews.sample.util.DebuggingTools;
+
 public class TestPortfolio {
     private final BigDecimal epsilon = new BigDecimal(0.00001);
 
@@ -180,7 +182,7 @@ public class TestPortfolio {
 
         List<Portfolio> listPortfolios = new ArrayList<>();
         listPortfolios.add(portfolio);
-        Portfolio.dumpToFile(listPortfolios, "test.csv");
+        DebuggingTools.dumpToFile(listPortfolios, "test.csv");
         logErrorMessages(listErrorMessages);
     }
 }
